@@ -1,9 +1,13 @@
+export const dynamic = 'force-dynamic';
+
 import Header from '@/components/site/Header';
 import Footer from '@/components/site/Footer';
-import { gallery } from '@/lib/mock-data';
+import { getGallery } from '@/lib/data/content';
 import Image from 'next/image';
 
-export default function GalleryPage() {
+export default async function GalleryPage() {
+  const gallery = await getGallery();
+
   return (
     <>
       <Header />

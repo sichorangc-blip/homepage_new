@@ -1,9 +1,13 @@
+export const dynamic = 'force-dynamic';
+
 import Header from '@/components/site/Header';
 import Footer from '@/components/site/Footer';
 import CollectionCard from '@/components/site/CollectionCard';
-import { collections } from '@/lib/mock-data';
+import { getCollections } from '@/lib/data/content';
 
-export default function CollectionListPage() {
+export default async function CollectionListPage() {
+  const collections = await getCollections();
+
   return (
     <>
       <Header />

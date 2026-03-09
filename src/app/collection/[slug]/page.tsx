@@ -1,11 +1,13 @@
+export const dynamic = 'force-dynamic';
+
 import Header from '@/components/site/Header';
 import Footer from '@/components/site/Footer';
-import { collections } from '@/lib/mock-data';
+import { getCollectionBySlug } from '@/lib/data/content';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 
-export default function CollectionDetailPage({ params }: { params: { slug: string } }) {
-  const item = collections.find(c => c.slug === params.slug);
+export default async function CollectionDetailPage({ params }: { params: { slug: string } }) {
+  const item = await getCollectionBySlug(params.slug);
   if (!item) return notFound();
 
   return (

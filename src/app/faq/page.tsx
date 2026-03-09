@@ -1,8 +1,12 @@
+export const dynamic = 'force-dynamic';
+
 import Header from '@/components/site/Header';
 import Footer from '@/components/site/Footer';
-import { faqs } from '@/lib/mock-data';
+import { getFaqs } from '@/lib/data/content';
 
-export default function FaqPage() {
+export default async function FaqPage() {
+  const faqs = await getFaqs();
+
   return (
     <>
       <Header />

@@ -1,15 +1,20 @@
+export const dynamic = 'force-dynamic';
+
 import Header from '@/components/site/Header';
 import Footer from '@/components/site/Footer';
 import HeroSection from '@/components/site/HeroSection';
 import CollectionCard from '@/components/site/CollectionCard';
-import { collections, gallery, siteCopy } from '@/lib/mock-data';
+import { getBanners, getCollections, getGallery } from '@/lib/data/content';
+import { siteCopy } from '@/lib/mock-data';
 import Image from 'next/image';
 
-export default function HomePage() {
+export default async function HomePage() {
+  const [banners, collections, gallery] = await Promise.all([getBanners(), getCollections(), getGallery()]);
+
   return (
     <>
       <Header />
-      <HeroSection />
+      <HeroSection banner={banners[0]} />
       <section className="container-p py-8">
         <p className="text-sm text-muted mb-2">Brand Message</p>
         <h2 className="text-2xl md:text-4xl max-w-3xl">{siteCopy.heroTitle}</h2>

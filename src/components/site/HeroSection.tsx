@@ -1,9 +1,8 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { banners } from '@/lib/mock-data';
+import { Banner } from '@/types';
 
-export default function HeroSection() {
-  const banner = banners[0];
+export default function HeroSection({ banner }: { banner: Banner }) {
   return (
     <section className="container-p py-6 md:py-10">
       <div className="relative h-[62vh] min-h-[420px] rounded-xl overflow-hidden">
