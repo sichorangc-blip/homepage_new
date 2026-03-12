@@ -21,6 +21,7 @@
 ### Admin
 - `/admin/login` (Supabase Auth 로그인)
 - `/admin/dashboard`
+- `/admin/settings` (브랜드명/홈 카피 수정)
 - `/admin/menu` (DB CRUD)
 - `/admin/banners` (DB CRUD + Storage 업로드)
 - `/admin/collections` (DB CRUD + Storage 업로드)
@@ -113,3 +114,12 @@ bash scripts/verify-required-files.sh
 5. 관리자 페이지 새로고침
 
 > 핵심: 테이블을 수동 생성한 것이 아니라면, `schema.sql` 실행 전에는 메뉴/배너/컬렉션 CRUD가 동작하지 않습니다.
+
+
+## 11) 운영자가 실제로 바꿀 수 있는 항목
+- `/admin/settings`: 브랜드명, 홈 히어로 문구, 섹션 타이틀
+- `/admin/menu`: 메뉴 추가/삭제
+- `/admin/banners`: 메인 배너 이미지/카피/CTA
+- `/admin/collections`: 컬렉션 카드/상세 기본 데이터
+
+> 변경이 반영되지 않으면 Vercel 배포 환경변수(Supabase 키)와 Supabase 테이블 생성 여부를 먼저 확인하세요.

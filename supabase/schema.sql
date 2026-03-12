@@ -2,6 +2,18 @@
 
 create extension if not exists "pgcrypto";
 
+
+create table if not exists site_settings (
+  id uuid primary key default gen_random_uuid(),
+  brand text,
+  hero_title text,
+  hero_subtitle text,
+  featured_title text,
+  gallery_title text,
+  updated_at timestamptz not null default now(),
+  created_at timestamptz not null default now()
+);
+
 create table if not exists menus (
   id uuid primary key default gen_random_uuid(),
   label text not null,
@@ -56,11 +68,15 @@ create table if not exists faqs (
   created_at timestamptz not null default now()
 );
 
+alter table site_settings enable row level security;
 alter table menus enable row level security;
 alter table banners enable row level security;
 alter table collections enable row level security;
 alter table gallery_items enable row level security;
 alter table faqs enable row level security;
+
+drop policy if exists "public read site_settings" on site_settings;
+create policy "public read site_settings" on site_settings for select using (true);
 
 drop policy if exists "public read menus" on menus;
 create policy "public read menus" on menus for select using (visible = true);

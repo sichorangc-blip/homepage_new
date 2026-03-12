@@ -1,10 +1,39 @@
-import { banners as fallbackBanners, collections as fallbackCollections, faqs as fallbackFaqs, gallery as fallbackGallery, menus as fallbackMenus } from '@/lib/mock-data';
+import {
+  banners as fallbackBanners,
+  collections as fallbackCollections,
+  faqs as fallbackFaqs,
+  gallery as fallbackGallery,
+  menus as fallbackMenus,
+  siteCopy
+} from '@/lib/mock-data';
 import { getSupabasePublicServerClient } from '@/lib/supabase/server';
+
+export async function getSiteSettings() {
+  const client = getSupabasePublicServerClient();
+  if (!client) return siteCopy;
+
+  const { data } = await client
+    .from('site_settings')
+    .select('*')
+    .order('updated_at', { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (!data) return siteCopy;
+
+  return {
+    brand: data.brand || siteCopy.brand,
+    heroTitle: data.hero_title || siteCopy.heroTitle,
+    heroSubtitle: data.hero_subtitle || siteCopy.heroSubtitle,
+    featuredTitle: data.featured_title || 'Featured Collections',
+    galleryTitle: data.gallery_title || 'Gallery Preview'
+  };
+}
 
 export async function getMenus() {
   const client = getSupabasePublicServerClient();
   if (!client) return fallbackMenus;
-  const { data } = await client.from('menus').select('*').order('order_index', { ascending: true });
+  const { data } = await client.from('menus').select('*').eq('visible', true).order('order_index', { ascending: true });
   if (!data?.length) return fallbackMenus;
   return data.map((m: any) => ({ id: m.id, label: m.label, path: m.path, order: m.order_index, visible: m.visible }));
 }
