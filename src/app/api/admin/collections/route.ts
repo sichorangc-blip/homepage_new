@@ -1,0 +1,55 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { getSupabaseServerClient } from '@/lib/supabase/server';
+
+export async function GET() {
+  const supabase = getSupabaseServerClient();
+  const { data, error } = await supabase.from('collections').select('*').order('order_index', { ascending: true });
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  return NextResponse.json(data);
+}
+
+export async function POST(req: NextRequest) {
+  const body = await req.json();
+  const supabase = getSupabaseServerClient();
+  const { data, error } = await supabase.from('collections').insert({
+    slug: body.slug,
+    title: body.title,
+    season: body.season,
+    summary: body.summary,
+    cover_image: body.cover_image,
+    thumbnail: body.thumbnail || body.cover_image,
+    body_blocks: body.body_blocks ?? [],
+    status: body.status ?? 'published',
+    order_index: body.order_index ?? 999
+  }).select('*').single();
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  return NextResponse.json(data);
+}
+
+export async function PUT(req: NextRequest) {
+  const body = await req.json();
+  const supabase = getSupabaseServerClient();
+  const { data, error } = await supabase.from('collections').update({
+    slug: body.slug,
+    title: body.title,
+    season: body.season,
+    summary: body.summary,
+    cover_image: body.cover_image,
+    thumbnail: body.thumbnail || body.cover_image,
+    status: body.status,
+    order_index: body.order_index
+  }).eq('id', body.id).select('*').single();
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  return NextResponse.json(data);
+}
+
+export async function DELETE(req: NextRequest) {
+  const { searchParams } = new URL(req.url);
+  const id = searchParams.get('id');
+  if (!id) return NextResponse.json({ error: 'id required' }, { status: 400 });
+
+  const supabase = getSupabaseServerClient();
+  const { error } = await supabase.from('collections').delete().eq('id', id);
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  return NextResponse.json({ ok: true });
+}
