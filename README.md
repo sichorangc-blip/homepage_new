@@ -82,6 +82,7 @@ npm run start
 - 이 저장소는 `src/app/page.tsx`가 루트 페이지이며, 별도 Pages 전용(basePath/assetPrefix/export) 설정을 사용하지 않습니다.
 
 - `Could not find the table 'public.collections' in the schema cache` 에러가 뜨면, Supabase SQL Editor에서 `supabase/schema.sql`을 반드시 실행해야 합니다.
+- `Could not find the table 'public.menus'` 또는 `public.banners` 에러가 뜨면, 동일하게 `supabase/schema.sql`을 실행한 뒤 페이지를 새로고침해야 합니다.
 
 ## 8) 구조
 - `src/app`: App Router 페이지

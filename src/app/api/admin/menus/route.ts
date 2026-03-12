@@ -1,11 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getSupabaseServerClient } from '@/lib/supabase/server';
 
+const MISSING_MENUS_TABLE_HELP = 'Supabase table public.menus is missing. Run supabase/schema.sql in Supabase SQL Editor, then refresh.';
+
+function isMissingMenusTable(errorMessage: string) {
+  return errorMessage.includes("Could not find the table 'public.menus'") ||
+    errorMessage.toLowerCase().includes('relation "menus" does not exist');
+}
+
 export async function GET() {
   try {
     const supabase = getSupabaseServerClient();
     const { data, error } = await supabase.from('menus').select('*').order('order_index', { ascending: true });
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    if (error) {
+      if (isMissingMenusTable(error.message)) {
+        return NextResponse.json({ error: MISSING_MENUS_TABLE_HELP }, { status: 500 });
+      }
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
     return NextResponse.json(data ?? []);
   } catch (e) {
     return NextResponse.json({ error: e instanceof Error ? e.message : 'Unexpected server error' }, { status: 500 });
@@ -22,7 +34,12 @@ export async function POST(req: NextRequest) {
       order_index: body.order_index ?? 999,
       visible: body.visible ?? true
     }).select('*').single();
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    if (error) {
+      if (isMissingMenusTable(error.message)) {
+        return NextResponse.json({ error: MISSING_MENUS_TABLE_HELP }, { status: 500 });
+      }
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
     return NextResponse.json(data);
   } catch (e) {
     return NextResponse.json({ error: e instanceof Error ? e.message : 'Unexpected server error' }, { status: 500 });
@@ -39,7 +56,12 @@ export async function PUT(req: NextRequest) {
       order_index: body.order_index,
       visible: body.visible
     }).eq('id', body.id).select('*').single();
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    if (error) {
+      if (isMissingMenusTable(error.message)) {
+        return NextResponse.json({ error: MISSING_MENUS_TABLE_HELP }, { status: 500 });
+      }
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
     return NextResponse.json(data);
   } catch (e) {
     return NextResponse.json({ error: e instanceof Error ? e.message : 'Unexpected server error' }, { status: 500 });
@@ -54,7 +76,12 @@ export async function DELETE(req: NextRequest) {
 
     const supabase = getSupabaseServerClient();
     const { error } = await supabase.from('menus').delete().eq('id', id);
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    if (error) {
+      if (isMissingMenusTable(error.message)) {
+        return NextResponse.json({ error: MISSING_MENUS_TABLE_HELP }, { status: 500 });
+      }
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
     return NextResponse.json({ ok: true });
   } catch (e) {
     return NextResponse.json({ error: e instanceof Error ? e.message : 'Unexpected server error' }, { status: 500 });
