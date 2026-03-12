@@ -88,3 +88,9 @@ npm run start
 - `src/lib/data/content.ts`: 프론트 데이터 로딩 (Supabase + fallback)
 - `supabase/schema.sql`: 초기 DB/Policy 스키마
 - `vercel.json`: Vercel Framework 강제 설정
+
+
+## 9) 필수 파일 존재 확인
+```bash
+bash scripts/verify-required-files.sh
+```
