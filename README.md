@@ -97,3 +97,19 @@ npm run start
 ```bash
 bash scripts/verify-required-files.sh
 ```
+
+
+## 10) Supabase 테이블 누락 즉시 해결 (menus / banners / collections)
+관리자 화면에서 아래 에러가 나오면:
+- `Could not find the table 'public.menus' in the schema cache`
+- `Could not find the table 'public.banners' in the schema cache`
+- `Could not find the table 'public.collections' in the schema cache`
+
+바로 아래 순서로 처리하세요.
+1. Supabase Dashboard 접속
+2. 좌측 **SQL Editor** 이동
+3. 저장소의 `supabase/schema.sql` 파일 전체를 복사해서 붙여넣기
+4. **Run** 실행
+5. 관리자 페이지 새로고침
+
+> 핵심: 테이블을 수동 생성한 것이 아니라면, `schema.sql` 실행 전에는 메뉴/배너/컬렉션 CRUD가 동작하지 않습니다.

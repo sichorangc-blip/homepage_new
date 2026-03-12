@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getSupabaseServerClient } from '@/lib/supabase/server';
 
-const MISSING_MENUS_TABLE_HELP = 'Supabase table public.menus is missing. Run supabase/schema.sql in Supabase SQL Editor, then refresh.';
+const MISSING_MENUS_TABLE_HELP = 'Supabase table public.menus is missing. Go to Supabase Dashboard → SQL Editor → run the full supabase/schema.sql file → click Run → refresh this page.';
 
 function isMissingMenusTable(errorMessage: string) {
   return errorMessage.includes("Could not find the table 'public.menus'") ||
