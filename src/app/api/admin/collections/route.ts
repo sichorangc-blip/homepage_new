@@ -1,11 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getSupabaseServerClient } from '@/lib/supabase/server';
 
+const MISSING_TABLE_HELP = 'Supabase table public.collections is missing. Run supabase/schema.sql in Supabase SQL Editor, then refresh.';
+
+function isMissingCollectionsTable(errorMessage: string) {
+  return errorMessage.includes("Could not find the table 'public.collections'") ||
+    errorMessage.toLowerCase().includes('relation "collections" does not exist');
+}
+
 export async function GET() {
   try {
     const supabase = getSupabaseServerClient();
     const { data, error } = await supabase.from('collections').select('*').order('order_index', { ascending: true });
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    if (error) {
+      if (isMissingCollectionsTable(error.message)) {
+        return NextResponse.json({ error: MISSING_TABLE_HELP }, { status: 500 });
+      }
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
     return NextResponse.json(data ?? []);
   } catch (e) {
     return NextResponse.json({ error: e instanceof Error ? e.message : 'Unexpected server error' }, { status: 500 });
@@ -27,7 +39,12 @@ export async function POST(req: NextRequest) {
       status: body.status ?? 'published',
       order_index: body.order_index ?? 999
     }).select('*').single();
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    if (error) {
+      if (isMissingCollectionsTable(error.message)) {
+        return NextResponse.json({ error: MISSING_TABLE_HELP }, { status: 500 });
+      }
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
     return NextResponse.json(data);
   } catch (e) {
     return NextResponse.json({ error: e instanceof Error ? e.message : 'Unexpected server error' }, { status: 500 });
@@ -48,7 +65,12 @@ export async function PUT(req: NextRequest) {
       status: body.status,
       order_index: body.order_index
     }).eq('id', body.id).select('*').single();
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    if (error) {
+      if (isMissingCollectionsTable(error.message)) {
+        return NextResponse.json({ error: MISSING_TABLE_HELP }, { status: 500 });
+      }
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
     return NextResponse.json(data);
   } catch (e) {
     return NextResponse.json({ error: e instanceof Error ? e.message : 'Unexpected server error' }, { status: 500 });
@@ -63,7 +85,12 @@ export async function DELETE(req: NextRequest) {
 
     const supabase = getSupabaseServerClient();
     const { error } = await supabase.from('collections').delete().eq('id', id);
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    if (error) {
+      if (isMissingCollectionsTable(error.message)) {
+        return NextResponse.json({ error: MISSING_TABLE_HELP }, { status: 500 });
+      }
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
     return NextResponse.json({ ok: true });
   } catch (e) {
     return NextResponse.json({ error: e instanceof Error ? e.message : 'Unexpected server error' }, { status: 500 });
