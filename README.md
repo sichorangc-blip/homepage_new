@@ -123,3 +123,16 @@ bash scripts/verify-required-files.sh
 - `/admin/collections`: 컬렉션 카드/상세 기본 데이터
 
 > 변경이 반영되지 않으면 Vercel 배포 환경변수(Supabase 키)와 Supabase 테이블 생성 여부를 먼저 확인하세요.
+
+
+## 12) "뭐가 바뀌었는지 모르겠을 때" (운영자 체크리스트)
+1. `/admin/diagnostics` 접속
+2. Environment 3개가 모두 `OK`인지 확인
+   - `NEXT_PUBLIC_SUPABASE_URL`
+   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+   - `SUPABASE_SERVICE_ROLE_KEY`
+3. Tables 항목이 모두 `OK`인지 확인
+4. `MISSING`/에러가 있으면 Supabase SQL Editor에서 `supabase/schema.sql` 전체 실행
+5. Vercel에서 최신 배포가 main 최신 커밋인지 확인 후 새로고침
+
+> 이제 관리자에서 변경 가능한 핵심은 `/admin/settings`, `/admin/menu`, `/admin/banners`, `/admin/collections` 입니다.

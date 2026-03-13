@@ -3,6 +3,7 @@ import { ReactNode } from 'react';
 
 const links = [
   ['Dashboard', '/admin/dashboard'],
+  ['Diagnostics', '/admin/diagnostics'],
   ['Home Settings', '/admin/settings'],
   ['Menu', '/admin/menu'],
   ['Banners', '/admin/banners'],
