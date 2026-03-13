@@ -3,7 +3,9 @@ import { Banner, Collection, Faq, GalleryItem, MenuItem } from '@/types';
 export const siteCopy = {
   brand: 'Atelier Quiet',
   heroTitle: 'Seasonal Notes, Curated Slowly.',
-  heroSubtitle: '모바일 중심 브랜드 아카이브 쇼케이스'
+  heroSubtitle: '모바일 중심 브랜드 아카이브 쇼케이스',
+  featuredTitle: 'Featured Collections',
+  galleryTitle: 'Gallery Preview'
 };
 
 export const menus: MenuItem[] = [
