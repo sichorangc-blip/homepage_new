@@ -140,3 +140,4 @@ bash scripts/verify-required-files.sh
 5. Vercel에서 최신 배포가 main 최신 커밋인지 확인 후 새로고침
 
 > 이제 관리자에서 변경 가능한 핵심은 `/admin/settings`, `/admin/menu`, `/admin/banners`, `/admin/collections` 입니다.
+- `/admin/settings` 오류 시, 페이지 안의 **Copy Fix SQL** 버튼으로 복구 SQL을 바로 복사해 Supabase SQL Editor에서 실행할 수 있습니다.
