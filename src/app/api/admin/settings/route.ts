@@ -1,12 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getSupabaseServerClient } from '@/lib/supabase/server';
+import { siteCopy } from '@/lib/mock-data';
 
-const MISSING_SETTINGS_TABLE_HELP = `Supabase table public.site_settings is missing or schema cache is stale. In Supabase SQL Editor run supabase/site_settings_fix.sql (or rerun supabase/schema.sql), then run NOTIFY pgrst, 'reload schema'; and refresh.`;
+const MISSING_SETTINGS_TABLE_HELP = `Supabase table public.site_settings is missing or schema cache is stale. Run supabase/site_settings_fix.sql (or rerun supabase/schema.sql), then run NOTIFY pgrst, 'reload schema'.`;
 
 function isMissingSettingsTable(errorMessage: string) {
   return errorMessage.includes("Could not find the table 'public.site_settings'") ||
     errorMessage.toLowerCase().includes('relation "site_settings" does not exist');
 }
+
+const fallbackSettings = {
+  id: null,
+  brand: siteCopy.brand,
+  hero_title: siteCopy.heroTitle,
+  hero_subtitle: siteCopy.heroSubtitle,
+  featured_title: siteCopy.featuredTitle,
+  gallery_title: siteCopy.galleryTitle,
+  warning: MISSING_SETTINGS_TABLE_HELP
+};
 
 export async function GET() {
   try {
@@ -19,11 +30,11 @@ export async function GET() {
       .maybeSingle();
 
     if (error) {
-      if (isMissingSettingsTable(error.message)) return NextResponse.json({ error: MISSING_SETTINGS_TABLE_HELP }, { status: 500 });
+      if (isMissingSettingsTable(error.message)) return NextResponse.json(fallbackSettings);
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    return NextResponse.json(data ?? null);
+    return NextResponse.json(data ?? fallbackSettings);
   } catch (e) {
     return NextResponse.json({ error: e instanceof Error ? e.message : 'Unexpected server error' }, { status: 500 });
   }
@@ -51,7 +62,12 @@ export async function PUT(req: NextRequest) {
 
     const { data, error } = upsertRes;
     if (error) {
-      if (isMissingSettingsTable(error.message)) return NextResponse.json({ error: MISSING_SETTINGS_TABLE_HELP }, { status: 500 });
+      if (isMissingSettingsTable(error.message)) {
+        return NextResponse.json({
+          error: MISSING_SETTINGS_TABLE_HELP,
+          action: 'Run supabase/site_settings_fix.sql in Supabase SQL Editor and refresh.'
+        }, { status: 400 });
+      }
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 

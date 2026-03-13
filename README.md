@@ -87,6 +87,8 @@ npm run start
 
 - `/admin/settings`에서 `public.site_settings` 에러가 계속 뜨면, `supabase/site_settings_fix.sql`을 실행하고 마지막에 `NOTIFY pgrst, 'reload schema';`를 실행하세요.
 
+- Security Advisor의 `RLS allows anonymous users` 경고는 공개 홈페이지 읽기 정책 때문에 발생할 수 있습니다(오류가 아니라 운영 정책 경고).
+
 ## 8) 구조
 - `src/app`: App Router 페이지
 - `src/app/api/admin/*`: 관리자 CRUD API

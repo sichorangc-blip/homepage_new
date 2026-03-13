@@ -4,12 +4,13 @@ import { FormEvent, useEffect, useState } from 'react';
 import AdminShell from '@/components/admin/AdminShell';
 
 type SettingsRow = {
-  id?: string;
+  id?: string | null;
   brand: string;
   hero_title: string;
   hero_subtitle: string;
   featured_title: string;
   gallery_title: string;
+  warning?: string;
 };
 
 const initial: SettingsRow = {
@@ -23,17 +24,20 @@ const initial: SettingsRow = {
 export default function AdminSettingsPage() {
   const [form, setForm] = useState<SettingsRow>(initial);
   const [error, setError] = useState('');
+  const [warning, setWarning] = useState('');
   const [success, setSuccess] = useState('');
 
   useEffect(() => {
     const load = async () => {
       setError('');
+      setWarning('');
       const res = await fetch('/api/admin/settings');
       const data = await res.json().catch(() => null);
       if (!res.ok) {
         setError(data?.error || '홈 설정을 불러오지 못했습니다.');
         return;
       }
+      if (data?.warning) setWarning(data.warning);
       if (data) setForm(data);
     };
     load();
@@ -60,6 +64,7 @@ export default function AdminSettingsPage() {
   return (
     <AdminShell>
       <h1 className="text-2xl font-semibold mb-4">Home / Brand Settings</h1>
+      {warning ? <p className="mb-3 text-sm text-amber-700">⚠ {warning}</p> : null}
       {error ? <p className="mb-3 text-sm text-red-600">{error}</p> : null}
       {success ? <p className="mb-3 text-sm text-emerald-700">{success}</p> : null}
       <form onSubmit={save} className="space-y-3 max-w-2xl">
@@ -70,6 +75,7 @@ export default function AdminSettingsPage() {
         <input value={form.gallery_title || ''} onChange={e => setForm({ ...form, gallery_title: e.target.value })} className="border p-2 w-full" placeholder="Gallery Section Title" />
         <button className="bg-stone-900 text-white px-4 py-2">Save Settings</button>
       </form>
+      <p className="text-xs text-stone-500 mt-6">Supabase Security Advisor 경고(anonymous select 허용)는 공개 홈페이지용 읽기 정책에서 발생할 수 있습니다.</p>
     </AdminShell>
   );
 }
