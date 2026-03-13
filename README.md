@@ -85,6 +85,8 @@ npm run start
 - `Could not find the table 'public.collections' in the schema cache` 에러가 뜨면, Supabase SQL Editor에서 `supabase/schema.sql`을 반드시 실행해야 합니다.
 - `Could not find the table 'public.menus'` 또는 `public.banners` 에러가 뜨면, 동일하게 `supabase/schema.sql`을 실행한 뒤 페이지를 새로고침해야 합니다.
 
+- `/admin/settings`에서 `public.site_settings` 에러가 계속 뜨면, `supabase/site_settings_fix.sql`을 실행하고 마지막에 `NOTIFY pgrst, 'reload schema';`를 실행하세요.
+
 ## 8) 구조
 - `src/app`: App Router 페이지
 - `src/app/api/admin/*`: 관리자 CRUD API

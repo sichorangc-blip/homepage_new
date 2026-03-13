@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getSupabaseServerClient } from '@/lib/supabase/server';
 
-const MISSING_SETTINGS_TABLE_HELP = 'Supabase table public.site_settings is missing. Go to Supabase Dashboard → SQL Editor → run the full supabase/schema.sql file → click Run → refresh this page.';
+const MISSING_SETTINGS_TABLE_HELP = `Supabase table public.site_settings is missing or schema cache is stale. In Supabase SQL Editor run supabase/site_settings_fix.sql (or rerun supabase/schema.sql), then run NOTIFY pgrst, 'reload schema'; and refresh.`;
 
 function isMissingSettingsTable(errorMessage: string) {
   return errorMessage.includes("Could not find the table 'public.site_settings'") ||

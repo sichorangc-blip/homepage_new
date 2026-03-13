@@ -97,3 +97,7 @@ create policy "public read faqs" on faqs for select using (visible = true);
 insert into storage.buckets (id, name, public)
 values ('media', 'media', true)
 on conflict (id) do nothing;
+
+
+-- Force PostgREST schema cache reload after DDL changes
+NOTIFY pgrst, 'reload schema';
