@@ -45,6 +45,10 @@ cp .env.example .env.local
 ### Step 4. 관리자 계정 생성
 Supabase Dashboard > Authentication > Users > Add user
 
+> 중요: 관리자 모드 "초기 비밀번호"는 별도로 정해져 있지 않습니다.  
+> Add user에서 직접 입력한 비밀번호가 관리자 로그인 비밀번호입니다.  
+> 비밀번호를 모르면 `/admin/login`에서 관리자 이메일 입력 후 **비밀번호 재설정 메일 보내기**를 사용하세요.
+
 ### Step 5. 개발 서버 실행
 ```bash
 npm run dev
