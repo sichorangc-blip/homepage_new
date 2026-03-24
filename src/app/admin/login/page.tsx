@@ -8,6 +8,7 @@ export default function AdminLoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [notice, setNotice] = useState('');
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
@@ -15,6 +16,7 @@ export default function AdminLoginPage() {
     e.preventDefault();
     setLoading(true);
     setError('');
+    setNotice('');
 
     try {
       const supabase = getSupabaseBrowserClient();
@@ -39,12 +41,15 @@ export default function AdminLoginPage() {
 
     setLoading(true);
     setError('');
+    setNotice('');
 
     try {
       const supabase = getSupabaseBrowserClient();
+      const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
       const origin = typeof window !== 'undefined' ? window.location.origin : '';
+      const baseUrl = siteUrl || origin;
       const { error: resetError } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${origin}/admin/login`,
+        redirectTo: `${baseUrl}/admin/reset-password`,
       });
 
       if (resetError) {
@@ -52,7 +57,7 @@ export default function AdminLoginPage() {
         return;
       }
 
-      setError('재설정 메일을 보냈습니다. 메일함(스팸함 포함)을 확인해 주세요.');
+      setNotice('재설정 메일을 보냈습니다. 메일함(스팸함 포함)을 확인해 주세요.');
     } catch (err) {
       setError(err instanceof Error ? err.message : '비밀번호 재설정 중 오류가 발생했습니다.');
     } finally {
@@ -70,6 +75,7 @@ export default function AdminLoginPage() {
         <input value={email} onChange={e => setEmail(e.target.value)} className="w-full border p-3" type="email" placeholder="Email" required />
         <input value={password} onChange={e => setPassword(e.target.value)} className="w-full border p-3" type="password" placeholder="Password" required />
         {error ? <p className="text-sm text-red-600">{error}</p> : null}
+        {notice ? <p className="text-sm text-green-700">{notice}</p> : null}
         <button disabled={loading} className="w-full bg-stone-900 text-white py-2 disabled:opacity-60">{loading ? 'Logging in...' : 'Login'}</button>
         <button
           type="button"
